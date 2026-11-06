@@ -196,11 +196,13 @@ export function Mapa() {
           <div className="map-road road-c" />
           <div className="map-green green-a" />
           <div className="map-green green-b" />
+          <div className="map-green green-c" />
           <div className="map-building building-a">BIBLIOTECA</div>
           <div className="map-building building-b">EDIFICIO L</div>
           <div className="map-building building-c">COLISEO</div>
           <div className="map-building building-d">AUDITORIO</div>
           <div className="map-building building-e">PLAZOLETA</div>
+          <div className="map-building building-f">EJEMPLO</div>
           {visible.map((a) => (
             <MapPin
               key={a.id}
@@ -214,6 +216,7 @@ export function Mapa() {
             <span /> Actividad disponible
           </div>
         </div>
+{/* Descripcion de --------------------------------------------- */}
         <aside className="map-info">
           <span className="eyebrow">CAMPUS EL JARDÍN</span>
           <h2>{activity ? activity.nombre : 'Explora el campus'}</h2>
@@ -531,6 +534,10 @@ export function FAQ() {
       q: '¿Dónde consulto el lugar de una actividad?',
       a: 'Cada actividad muestra el lugar y puedes ubicarla en el mapa interactivo del campus.',
     },
+    {
+      q: '¿Quienes son nuestros creadores?',
+      a: 'Este proyecto fue desarrollado por Hendrickson Alexander Ruiz Cala y Julian Villarreal Mejia de ingenieria de sistemas'
+    }
   ];
   return (
     <section className="section page-section faq-section">
@@ -550,6 +557,7 @@ export function FAQ() {
     </section>
   );
 }
+// Login page for unauthenticated users se utilizo IA para crear esta pagina de login y registro, se puede mejorar la seguridad y la validacion de datos
 export function Auth({ register = false }) {
   const { setUser } = useApp(),
     nav = useNavigate();
