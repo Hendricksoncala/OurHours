@@ -217,22 +217,30 @@ const [selected, setSelected] = useState(null);
       </div>
 
       <div className="map-layout">
-  <div 
-    className="campus-map" 
-    style={{ position: 'relative' }}
-    onClick={(e) => {
-      // Tu rastreador de coordenadas unificado en el contenedor principal
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      console.log(`x: ${Math.round(x)}, y: ${Math.round(y)}`);
-    }}
-  >
-<img 
-    src={mapasPorSede[campusActivo]} 
-    alt={`Mapa de ${campusActivo}`}
-    style={{ width: '100%', height: 'auto', display: 'block' }}
-  />
+      <div 
+        className="campus-map" 
+        style={{ 
+          position: 'relative', 
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          console.log(`x: ${Math.round(x)}, y: ${Math.round(y)}`);
+        }}
+      >
+        <img 
+          src={mapasPorSede[campusActivo]} 
+          alt={`Mapa de ${campusActivo}`}
+          style={{ 
+            width: '100%', 
+            height: 'auto',  // Hace que la altura sea proporcional a la anchura real de la foto
+            display: 'block' 
+          }}
+        />
 
     {/* Renderizado de pines */}
 {visible.map((a) => (

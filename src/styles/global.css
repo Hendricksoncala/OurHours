@@ -713,7 +713,8 @@ button {
   margin-top: 20px;
 }
 .campus-map {
-  min-height: 470px;
+  height: auto;
+  align-self: start;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
@@ -1783,9 +1784,6 @@ html[data-theme='dark'] .detail-art {
   .map-layout {
     display: block;
     margin-top: 14px;
-  }
-  .campus-map {
-    min-height: 360px;
   }
   .map-info {
     margin-top: 13px;
