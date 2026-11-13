@@ -10,6 +10,9 @@ import ProgressBar from '../components/ProgressBar';
 import MapPin from '../components/MapPin';
 import Accordion from '../components/Accordion';
 import Icon from '../components/Icons';
+import imgJardin from '../imgs/jardin.jpg';
+import imgCSU from '../imgs/csu.jpg';
+import imgBosque from '../imgs/bosque.jpg';
 const today = new Date().toISOString().slice(0, 10),
   dateLabel = (d) =>
     new Date(`${d}T12:00:00`).toLocaleDateString('es-CO', {
@@ -132,6 +135,7 @@ export function Inicio() {
 export function Actividades() {
   const [q, setQ] = useState(''),
     [filters, setFilters] = useState({ tipo: '', fecha: '', horas: '' });
+// Usamos memo ya que al ser un sistema de cache de react, no se recalcula el filtrado si no hay cambios en los filtros o en la busqueda, lo que mejora el rendimiento de la aplicacion
   const filtered = useMemo(
     () =>
       activities.filter(
@@ -141,6 +145,8 @@ export function Actividades() {
           (!filters.fecha ||
             (filters.fecha === 'today'
               ? a.fecha === today
+// restamos 7 dias a la fecha de hoy para mostrar las actividades de la semana, 7 * 864e5 es el numero de milisegundos en 7 dias
+//Esta filtro fue ayudado a ahcer con IA porque el calculo algebraico de fechas es un poco complejo y la IA me ayudo a simplificarlo, ademas de que me dio una mejor idea de como filtrar por fechas
               : new Date(`${a.fecha}T12:00:00`) - new Date() <= 7 * 864e5 && a.fecha >= today)) &&
           (!filters.horas || (filters.horas === '2' ? a.horas === 2 : a.horas >= 3)),
       ),
@@ -174,48 +180,73 @@ export function Actividades() {
   );
 }
 export function Mapa() {
-  const [selected, setSelected] = useState(null),
-    [q, setQ] = useState('');
+const [selected, setSelected] = useState(null);
+  const [q, setQ] = useState('');
+  // 1. Nuevo estado para la sede activa (por defecto El Jardín)
+  const [campusActivo, setCampusActivo] = useState('UNAB JARDIN');
+
+  // 2. Actualizamos el filtro para que también respete la sede
   const visible = activities.filter(
-    (a) => !q || `${a.nombre} ${a.lugar}`.toLowerCase().includes(q.toLowerCase()),
+    (a) => 
+      (!q || `${a.nombre} ${a.lugar}`.toLowerCase().includes(q.toLowerCase())) &&
+      (a.campus === campusActivo) // Solo muestra pines de la sede actual
   );
+
   const activity = activities.find((a) => a.id === selected);
+  const mapasPorSede = {
+    'UNAB JARDIN': imgJardin, // Tu variable importada
+    'CSU': imgCSU,            // Tu variable importada
+    'EL BOSQUE': imgBosque    // Pon aquí imgBosque si tienes una tercera foto
+  };
   return (
     <section className="section page-section">
-      <Heading
-        eyebrow="ENCUENTRA TU LUGAR"
-        title="Mapa del campus"
-        subtitle="Explora actividades y descubre dónde suceden."
-      />
-      <SearchBar value={q} onChange={setQ} placeholder="Buscar actividad o lugar..." />
+      <Heading /* ... */ />
+      <SearchBar value={q} onChange={setQ} placeholder="Buscar actividad..." />
+
+      {/* 3. Botones para cambiar de sede */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', marginTop: '1rem' }} className="campus-selector">
+        {['UNAB JARDIN', 'CSU', 'EL BOSQUE'].map(sede => (
+          <button 
+            key={sede} 
+            onClick={() => { setCampusActivo(sede); setSelected(null); }}
+            className={`button ${campusActivo === sede ? 'primary' : 'ghost'}`}
+          >
+            {sede}
+          </button>
+        ))}
+      </div>
+
       <div className="map-layout">
-        <div className="campus-map">
-          <div className="map-watermark">UNAB</div>
-          <div className="map-road road-a" />
-          <div className="map-road road-b" />
-          <div className="map-road road-c" />
-          <div className="map-green green-a" />
-          <div className="map-green green-b" />
-          <div className="map-green green-c" />
-          <div className="map-building building-a">BIBLIOTECA</div>
-          <div className="map-building building-b">EDIFICIO L</div>
-          <div className="map-building building-c">COLISEO</div>
-          <div className="map-building building-d">AUDITORIO</div>
-          <div className="map-building building-e">PLAZOLETA</div>
-          <div className="map-building building-f">EJEMPLO</div>
-          {visible.map((a) => (
-            <MapPin
-              key={a.id}
-              activity={a}
-              selected={selected === a.id}
-              onClick={() => setSelected(a.id)}
-            />
-          ))}
-          <span className="map-north">N ↑</span>
-          <div className="map-legend">
-            <span /> Actividad disponible
-          </div>
-        </div>
+  <div 
+    className="campus-map" 
+    style={{ position: 'relative' }}
+    onClick={(e) => {
+      // Tu rastreador de coordenadas unificado en el contenedor principal
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      console.log(`x: ${Math.round(x)}, y: ${Math.round(y)}`);
+    }}
+  >
+<img 
+    src={mapasPorSede[campusActivo]} 
+    alt={`Mapa de ${campusActivo}`}
+    style={{ width: '100%', height: 'auto', display: 'block' }}
+  />
+
+    {/* Renderizado de pines */}
+{visible.map((a) => (
+    <MapPin 
+      key={a.id} 
+      activity={a} 
+      selected={selected === a.id} 
+      onClick={(e) => {
+        e.stopPropagation(); // Evita que se imprima en consola cuando tocas un pin
+        setSelected(a.id);
+      }} 
+    />
+  ))}
+</div>
 {/* Descripcion de --------------------------------------------- */}
         <aside className="map-info">
           <span className="eyebrow">CAMPUS EL JARDÍN</span>
