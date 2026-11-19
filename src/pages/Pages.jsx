@@ -13,6 +13,7 @@ import Icon from '../components/Icons';
 import imgJardin from '../imgs/jardin.jpg';
 import imgCSU from '../imgs/csu.jpg';
 import imgBosque from '../imgs/bosque.jpg';
+import imgFundadores from '../imgs/Fundadores.jpg';
 const today = new Date().toISOString().slice(0, 10),
   dateLabel = (d) =>
     new Date(`${d}T12:00:00`).toLocaleDateString('es-CO', {
@@ -593,6 +594,28 @@ export function FAQ() {
           Visitar unab.edu.co <Icon name="arrow" size={16} />
         </a>
       </div>
+      <section className="creators-section" aria-labelledby="creators-title">
+        <div className="creators-photo-wrap">
+          <img
+            className="creators-photo"
+            src={imgFundadores}
+            alt="Hendrickson Alexander Ruiz Cala y Julian Villarreal Mejia, creadores de OurHours"
+          />
+        </div>
+        <div className="creators-copy">
+          <span className="eyebrow">NUESTRA INICIATIVA</span>
+          <h2 id="creators-title">Detrás de OurHours</h2>
+          <p>
+            OurHours nace de la iniciativa de crear una experiencia que permita a la comunidad
+            UNAB descubrir nuevas actividades, aprovechar su tiempo libre y contribuir a su
+            formación integral.
+          </p>
+          <div className="creators-list" aria-label="Creadores de OurHours">
+            <span>Hendrickson Alexander Ruiz Cala</span>
+            <span>Julian Villarreal Mejia</span>
+          </div>
+        </div>
+      </section>
     </section>
   );
 }
